@@ -1,9 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../models/product.dart';
 import '../screen/product_favorite_screen/provider/favorite_provider.dart';
+import '../utility/constants.dart';
 import '../utility/extensions.dart';
 import '../utility/utility_extention.dart';
 import 'custom_network_image.dart';
@@ -49,13 +49,14 @@ class ProductGridTile extends StatelessWidget {
             Consumer<FavoriteProvider>(
               builder: (context, favoriteProvider, child) {
                 return IconButton(
-                  icon:  const Icon(
+                  icon: Icon(
                     Icons.favorite,
-                    //TODO: should complete make color dynamic
-                    color: Color(0xFFA6A3A0),
+                    color: favoriteProvider.checkIsItemFavorite(product.sId!)
+                        ? Colors.red
+                        : const Color(0xFFA6A3A0),
                   ),
                   onPressed: () {
-                    //TODO: should complete make call updateToFavoriteList
+                    favoriteProvider.updateToFavoriteList(product.sId ?? '');
                   },
                 );
               },

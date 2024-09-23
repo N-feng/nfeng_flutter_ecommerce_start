@@ -1,3 +1,6 @@
+import '../../../utility/extensions.dart';
+
+import '../../../utility/constants.dart';
 import '../../../utility/utility_extention.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cart/model/cart_model.dart';
@@ -45,7 +48,7 @@ class CartListSection extends StatelessWidget {
                         child: Padding(
                           padding: const EdgeInsets.all(5),
                           child: Image.network(
-                            cartItem.productImages.safeElementAt(0) ?? '',
+                            cartItem.productDetails.images[0]?.url ?? '',
                             width: 100,
                             height: 90,
                             loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
@@ -88,7 +91,7 @@ class CartListSection extends StatelessWidget {
                       ),
                       const SizedBox(height: 5),
                       Text(
-                        "\$${cartItem.variants.safeElementAt(0)?.price}",
+                        "\$${cartItem.unitPrice}",
                         style: const TextStyle(
                           fontWeight: FontWeight.w900,
                           fontSize: 23,
@@ -109,7 +112,7 @@ class CartListSection extends StatelessWidget {
                         IconButton(
                           splashRadius: 10.0,
                           onPressed: () {
-                            //TODO: should complete call updateCart decrement
+                            context.cartProvider.updateCart(index, -1);
                           },
                           icon: const Icon(
                             Icons.remove,
@@ -126,7 +129,7 @@ class CartListSection extends StatelessWidget {
                         IconButton(
                           splashRadius: 10.0,
                           onPressed: () {
-                            //TODO: should complete updateCart increment
+                            context.cartProvider.updateCart(index, 1);
                           },
                           icon: const Icon(Icons.add, color: Color(0xFFEC6813)),
                         ),
