@@ -4,7 +4,7 @@ import '../../login_screen/provider/user_provider.dart';
 import '../../../services/http_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cart/flutter_cart.dart';
-// import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 // import 'package:razorpay_flutter/razorpay_flutter.dart';
@@ -173,8 +173,10 @@ class CartProvider extends ChangeNotifier {
         "productID": cartItem.productId,
         "productName": cartItem.productName,
         "quantity": cartItem.quantity,
-        "price": cartItem.variants.safeElementAt(0)?.price ?? 0,
-        "variant": cartItem.variants.safeElementAt(0)?.color ?? ""
+        // "price": cartItem.variants.safeElementAt(0)?.price ?? 0,
+        // "variant": cartItem.variants.safeElementAt(0)?.color ?? ""
+        "price": cartItem.unitPrice ?? 0,
+        "variant": cartItem.productDetails.proVariantId[0] ?? "",
       };
     }).toList();
   }
@@ -218,58 +220,58 @@ class CartProvider extends ChangeNotifier {
       final customer = data['customer'];
       final publishableKey = data['publishableKey'];
 
-      // Stripe.publishableKey = publishableKey;
-      // BillingDetails billingDetails = BillingDetails(
-      //   email: _userProvider.getLoginUsr()?.name,
-      //   phone: '91234123908',
-      //   name: _userProvider.getLoginUsr()?.name,
-      //   address: Address(
-      //       country: 'US',
-      //       city: cityController.text,
-      //       line1: streetController.text,
-      //       line2: stateController.text,
-      //       postalCode: postalCodeController.text,
-      //       state: stateController.text
-      //       // Other address details
-      //       ),
-      //   // Other billing details
-      // );
-      // await Stripe.instance.initPaymentSheet(
-      //   paymentSheetParameters: SetupPaymentSheetParameters(
-      //     customFlow: false,
-      //     merchantDisplayName: 'MOBIZATE',
-      //     paymentIntentClientSecret: paymentIntent,
-      //     customerEphemeralKeySecret: ephemeralKey,
-      //     customerId: customer,
-      //     style: ThemeMode.light,
-      //     billingDetails: billingDetails,
-      //     // googlePay: const PaymentSheetGooglePay(
-      //     //   merchantCountryCode: 'US',
-      //     //   currencyCode: 'usd',
-      //     //   testEnv: true,
-      //     // ),
-      //     // applePay: const PaymentSheetApplePay(merchantCountryCode: 'US')
-      //   ),
-      // );
+      Stripe.publishableKey = publishableKey;
+      BillingDetails billingDetails = BillingDetails(
+        email: _userProvider.getLoginUsr()?.name,
+        phone: '91234123908',
+        name: _userProvider.getLoginUsr()?.name,
+        address: Address(
+            country: 'US',
+            city: cityController.text,
+            line1: streetController.text,
+            line2: stateController.text,
+            postalCode: postalCodeController.text,
+            state: stateController.text
+            // Other address details
+            ),
+        // Other billing details
+      );
+      await Stripe.instance.initPaymentSheet(
+        paymentSheetParameters: SetupPaymentSheetParameters(
+          customFlow: false,
+          merchantDisplayName: 'MOBIZATE',
+          paymentIntentClientSecret: paymentIntent,
+          customerEphemeralKeySecret: ephemeralKey,
+          customerId: customer,
+          style: ThemeMode.light,
+          billingDetails: billingDetails,
+          // googlePay: const PaymentSheetGooglePay(
+          //   merchantCountryCode: 'US',
+          //   currencyCode: 'usd',
+          //   testEnv: true,
+          // ),
+          // applePay: const PaymentSheetApplePay(merchantCountryCode: 'US')
+        ),
+      );
 
-      // await Stripe.instance.presentPaymentSheet().then((value) {
-      //   log('payment success');
-      //   //? do the success operation
-      //   ScaffoldMessenger.of(Get.context!).showSnackBar(
-      //     const SnackBar(content: Text('Payment Success')),
-      //   );
-      //   operation();
-      // }).onError((error, stackTrace) {
-      //   if (error is StripeException) {
-      //     ScaffoldMessenger.of(Get.context!).showSnackBar(
-      //       SnackBar(content: Text('${error.error.localizedMessage}')),
-      //     );
-      //   } else {
-      //     ScaffoldMessenger.of(Get.context!).showSnackBar(
-      //       SnackBar(content: Text('Stripe Error: $error')),
-      //     );
-      //   }
-      // });
+      await Stripe.instance.presentPaymentSheet().then((value) {
+        log('payment success');
+        //? do the success operation
+        ScaffoldMessenger.of(Get.context!).showSnackBar(
+          const SnackBar(content: Text('Payment Success')),
+        );
+        operation();
+      }).onError((error, stackTrace) {
+        if (error is StripeException) {
+          ScaffoldMessenger.of(Get.context!).showSnackBar(
+            SnackBar(content: Text('${error.error.localizedMessage}')),
+          );
+        } else {
+          ScaffoldMessenger.of(Get.context!).showSnackBar(
+            SnackBar(content: Text('Stripe Error: $error')),
+          );
+        }
+      });
     } catch (e) {
       ScaffoldMessenger.of(Get.context!).showSnackBar(
         SnackBar(content: Text(e.toString())),
@@ -285,7 +287,7 @@ class CartProvider extends ChangeNotifier {
       if (razorpayKey != null && razorpayKey != '') {
         var options = {
           'key': razorpayKey,
-          'amount': 100, //TODO: should complete amount grand total
+          'amount': getGrandTotal() * 100,
           'name': "user",
           "currency": 'INR',
           'description': 'Your transaction description',

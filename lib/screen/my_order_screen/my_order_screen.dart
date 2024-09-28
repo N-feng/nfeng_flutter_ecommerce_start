@@ -14,7 +14,7 @@ class MyOrderScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //TODO: should complete call getAllOrderByUser
+    context.dataProvider.getAllOrderByUser(showSnack: false, userId: context.userProvider.getLoginUsr()?.sId ?? '');
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -30,7 +30,7 @@ class MyOrderScreen extends StatelessWidget {
               final order = context.dataProvider.orders[index];
               return OrderTile(
                 paymentMethod: order.paymentMethod ?? '',
-                items: '${(order.items.safeElementAt(0)?.productName ?? '')} & ${order.items!.length - 1} Items'  ,
+                items: '${(order.items.safeElementAt(0)?.productName ?? '')} & ${order.items!.length} Items'  ,
                 date: order.orderDate ?? '',
                 status: order.orderStatus ?? 'pending',
                 onTap: (){

@@ -15,6 +15,7 @@ class ProductDetailProvider extends ChangeNotifier {
   ProductDetailProvider(this._dataProvider);
 
   addToCart(Product product) {
+    print(product.toJson());
     if (product.proVariantId!.isNotEmpty && selectedVariant == null) {
       SnackBarHelper.showErrorSnackBar('Please Select a Variant');
       return;

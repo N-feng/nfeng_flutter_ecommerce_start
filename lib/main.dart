@@ -1,14 +1,3 @@
-import 'dart:ui';
-
-import 'package:flutter/material.dart';
-import 'package:flutter_cart/flutter_cart.dart';
-import 'package:get/get_navigation/src/root/get_material_app.dart';
-import 'package:get_storage/get_storage.dart';
-import 'package:onesignal_flutter/onesignal_flutter.dart';
-import 'package:provider/provider.dart';
-
-import 'core/data/data_provider.dart';
-import 'models/user.dart';
 import 'screen/home_screen.dart';
 import 'screen/login_screen/login_screen.dart';
 import 'screen/login_screen/provider/user_provider.dart';
@@ -19,13 +8,22 @@ import 'screen/product_favorite_screen/provider/favorite_provider.dart';
 import 'screen/profile_screen/provider/profile_provider.dart';
 import 'utility/app_theme.dart';
 import 'utility/extensions.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_cart/flutter_cart.dart';
+
+import 'package:get/get_navigation/src/root/get_material_app.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
+import 'dart:ui' show PointerDeviceKind;
+import 'package:provider/provider.dart';
+import 'core/data/data_provider.dart';
+import 'models/user.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // await GetStorage.init();
   var cart = FlutterCart();
-  //TODO: should complete add one signal app id
-  OneSignal.initialize("YOUR_ONE_SIGNAL_APP_ID");
+  OneSignal.initialize("ca317366-8f98-4fbc-8505-6544493faaf2");
   OneSignal.Notifications.requestPermission(true);
   // await cart.initializeCart(isPersistenceSupportEnabled: true);
   runApp(
